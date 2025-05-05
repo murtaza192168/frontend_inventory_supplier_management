@@ -12,14 +12,14 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-const InventoryTable = () => {
+const InventoryTable = ( { refresh } ) => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch inventory from backend
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/inventory/all") // Replace with your actual route
+      .get("http://localhost:3000/api/inventory/all") 
       .then((res) => {
         setInventory(res.data);
         setLoading(false);
@@ -28,14 +28,14 @@ const InventoryTable = () => {
         console.error("Error fetching inventory:", err);
         setLoading(false);
       });
-  }, []);
+  }, [refresh]);
 
   if (loading) return <CircularProgress />;
 
   return (
     <TableContainer component={Paper} sx={{ mt: 4 }}>
       <Typography variant="h6" sx={{ m: 2 }}>
-        Inventory Items
+        Inventory List
       </Typography>
       <Table>
         <TableHead>

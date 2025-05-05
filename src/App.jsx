@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import InventoryTable from "./components/InventoryTable";
 import AddInventoryForm from "./components/AddInventoryForm";
 import { Container } from "@mui/material";
