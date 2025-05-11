@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import InventoryTable from "./components/InventoryTable";
-import AddInventoryForm from "./components/AddInventoryForm";
+import InventoryList from "./components/InventoryList";
+import InventoryForm from "./components/InventoryForm";
 import SupplierForm from "./components/SupplierForm";
 import SupplierList from "./components/SupplierList";
 import { Container } from "@mui/material";
@@ -17,8 +17,8 @@ function App() {
   return(
     <Container>
       <h1>Inventory Management</h1>
-      <AddInventoryForm onItemAdded={handleItemAdded} />
-      <InventoryTable refresh={refresh} />
+      <InventoryForm onItemAdded={handleItemAdded} />
+      <InventoryList refresh={refresh} />
       <SupplierForm />
       <SupplierList/>
     </Container>
