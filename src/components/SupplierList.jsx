@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 import {
   Table, TableHead, TableBody, TableRow, TableCell,
-  Paper, Typography, TableContainer
+  Paper, Typography, TableContainer, Button,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 
 const SupplierList = () => {
   const [suppliers, setSuppliers] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
   // Fetch suppliers when the component loads
   useEffect(() => {
@@ -21,6 +24,23 @@ const SupplierList = () => {
     fetchSuppliers();
   }, []);
 
+  const confirmDelete = (id) => {
+    setSelectedSupplierId(id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      await axiosInstance.delete(`/suppliers/${selectedSupplierId}`);
+      setSuppliers((prev) => prev.filter((supplier) => supplier._id !== selectedSupplierId)); // Remove from UI
+      setOpenDialog(false);
+      setSelectedSupplierId(null);
+    } catch (error) {
+      console.error('Error deleting supplier:', error);
+      setOpenDialog(false);
+    }
+  };
+
   return (
     <Paper elevation={3} sx={{ mt: 4, p: 3 }}>
       <Typography variant="h6" gutterBottom>
@@ -34,6 +54,7 @@ const SupplierList = () => {
               <TableCell>Contact</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Address</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -43,11 +64,35 @@ const SupplierList = () => {
                 <TableCell>{supplier.contact}</TableCell>
                 <TableCell>{supplier.email}</TableCell>
                 <TableCell>{supplier.address}</TableCell>
+                <TableCell>
+                  {/* Delete Button */}
+                  <Button variant="contained" color="error" onClick={() => confirmDelete(supplier._id)}>
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this supplier? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirmed} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };
